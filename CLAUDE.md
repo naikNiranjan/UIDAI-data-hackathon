@@ -208,6 +208,110 @@ Health_Score = (
 
 ---
 
+## State Archetypes: The Storytelling Layer
+
+Instead of just showing numbers, we classify states into **memorable archetypes** that tell a story:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         STATE ARCHETYPES                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  🟢 DIGITAL LEADERS                                                         │
+│     "The states that got it right"                                          │
+│     ─────────────────────────────────────────────────────────────────────   │
+│     Criteria:                                                               │
+│     • Health Score > 70                                                     │
+│     • TCS > 0.6 (consistent operations)                                     │
+│     • GCI < 0.4 (equitable distribution)                                    │
+│     • YIR > 0.8 (youth included)                                            │
+│     Expected: Kerala, Tamil Nadu, Goa                                       │
+│                                                                             │
+│  🟡 SPRINTERS                                                               │
+│     "Growing fast, infrastructure struggling to keep up"                    │
+│     ─────────────────────────────────────────────────────────────────────   │
+│     Criteria:                                                               │
+│     • IDI > 0.03 (high enrolment, lagging updates)                          │
+│     • Health Score 40-70                                                    │
+│     • High enrolment volume                                                 │
+│     Expected: UP, Bihar, Rajasthan (high population growth areas)           │
+│                                                                             │
+│  🔴 SLEEPWALKERS                                                            │
+│     "Low activity, drifting toward exclusion"                               │
+│     ─────────────────────────────────────────────────────────────────────   │
+│     Criteria:                                                               │
+│     • TCS < 0.4 (sporadic activity)                                         │
+│     • Low update volumes overall                                            │
+│     • Health Score < 40                                                     │
+│     Expected: States with weak Aadhaar infrastructure                       │
+│                                                                             │
+│  🟠 THE EXCLUDED                                                            │
+│     "Specific populations being left behind"                                │
+│     ─────────────────────────────────────────────────────────────────────   │
+│     Criteria:                                                               │
+│     • YIR < 0.6 (youth severely excluded) OR                                │
+│     • UBI < 0.25 or > 0.65 (extreme imbalance) OR                           │
+│     • GCI > 0.6 (severe geographic concentration)                           │
+│     Expected: States with specific demographic/geographic gaps              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Archetype Classification Logic
+
+```python
+def classify_archetype(row):
+    """
+    Classify a state into one of 4 archetypes based on metrics.
+    Priority order: Excluded > Sleepwalker > Sprinter > Digital Leader
+    """
+    # Check for EXCLUDED first (specific failures)
+    if row['YIR'] < 0.6:
+        return '🟠 Excluded (Youth)'
+    if row['UBI'] < 0.25 or row['UBI'] > 0.65:
+        return '🟠 Excluded (Update Imbalance)'
+    if row['GCI'] > 0.6:
+        return '🟠 Excluded (Geographic)'
+
+    # Check for SLEEPWALKER (low activity, drifting)
+    if row['TCS'] < 0.4 and row['Health_Score'] < 40:
+        return '🔴 Sleepwalker'
+
+    # Check for SPRINTER (growing but lagging)
+    if row['IDI'] > 0.03 and row['Health_Score'] < 70:
+        return '🟡 Sprinter'
+
+    # Check for DIGITAL LEADER
+    if (row['Health_Score'] > 70 and
+        row['TCS'] > 0.6 and
+        row['GCI'] < 0.4 and
+        row['YIR'] > 0.8):
+        return '🟢 Digital Leader'
+
+    # Default: Moderate performer
+    return '🟡 Sprinter'  # Most states will be here
+```
+
+### Why Archetypes Matter
+
+| Aspect | Numbers Only | Archetypes |
+|--------|--------------|------------|
+| **Memorability** | "UP has IDI of 0.15" | "UP is a Sprinter" |
+| **Actionability** | What does 0.15 mean? | Sprinters need update infrastructure |
+| **Storytelling** | Boring for judges | Creates narrative hook |
+| **Policy Mapping** | Abstract | Clear intervention type |
+
+### Archetype-to-Policy Mapping
+
+| Archetype | Primary Issue | Recommended Intervention |
+|-----------|---------------|--------------------------|
+| 🟢 **Digital Leader** | Maintain momentum | Share best practices, pilot new features |
+| 🟡 **Sprinter** | Infrastructure lag | Rapid update camp deployment |
+| 🔴 **Sleepwalker** | Low awareness/access | Awareness campaigns, mobile units |
+| 🟠 **Excluded** | Specific population gap | Targeted intervention (youth/rural/type) |
+
+---
+
 ## Real-World Problem Connection
 
 While we measure ecosystem health, the underlying concern remains service delivery:
@@ -227,16 +331,16 @@ While we measure ecosystem health, the underlying concern remains service delive
 
 | # | Visualization | Purpose |
 |---|---------------|---------|
-| 1 | **Health Dashboard Heatmap** | All 5 metrics for top 20 states |
-| 2 | **Ecosystem Quadrant Scatter** | IDI (X) vs Health Score (Y) |
-| 3 | **Temporal Consistency Timeline** | Compare high vs low TCS states |
+| 1 | **Archetype Summary Card** | Visual count of states by archetype |
+| 2 | **Archetype Scatter Plot** | IDI vs Health Score, colored by archetype |
+| 3 | **Health Dashboard Heatmap** | All 5 metrics for all states |
 | 4 | **Diverging Bar Chart (IDI)** | Deficit vs surplus states |
-| 5 | **Geographic Equity Map** | GCI choropleth |
-| 6 | **Youth Inclusion Bar** | YIR rankings |
-| 7 | **Update Balance Pie/Bar** | Bio vs Demo by state |
-| 8 | **District Box Plot** | Intra-state variation |
-| 9 | **Radar Chart** | Multi-metric view for top states |
-| 10 | **Trend Lines** | Monthly patterns |
+| 5 | **Youth Inclusion Bar** | YIR rankings with archetype colors |
+| 6 | **Geographic Equity Bar** | GCI by state |
+| 7 | **Update Balance Stacked Bar** | Bio vs Demo by state |
+| 8 | **Temporal Consistency Timeline** | Monthly trends for select states |
+| 9 | **Radar Chart** | Multi-metric view for archetype representatives |
+| 10 | **State Rankings Table** | Final rankings with all metrics |
 
 ---
 
@@ -293,10 +397,11 @@ UU/
 3. **National Totals** - Calculate baselines for ratios
 4. **Metric Calculation** - Compute IDI, UBI, YIR, GCI, TCS per state
 5. **Composite Score** - Calculate weighted health score
-6. **Visualizations** - Generate all charts
-7. **Insights** - Extract top findings
-8. **Recommendations** - Data-backed policy suggestions
-9. **Report** - Compile final PDF
+6. **Archetype Classification** - Assign archetypes to each state
+7. **Visualizations** - Generate all charts with archetype coloring
+8. **Insights** - Extract top findings by archetype
+9. **Recommendations** - Archetype-specific policy suggestions
+10. **Report** - Compile final PDF
 
 ---
 
@@ -345,6 +450,6 @@ A submission that:
 
 ---
 
-**Document Version:** 2.0
+**Document Version:** 3.0
 **Last Updated:** 2026-01-18
-**Status:** Final Approach Approved - Ready for Implementation
+**Status:** Archetype Framework Added - Ready for Implementation

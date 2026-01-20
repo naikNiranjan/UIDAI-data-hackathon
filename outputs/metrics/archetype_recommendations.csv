@@ -1,0 +1,6 @@
+Archetype,State_Count,Primary_Issue,Secondary_Issue,Recommended_Intervention,Expected_Impact,Implementation_Cost
+Sprinter,2,Infrastructure lag (PDS),High enrolment backlog,Rapid deployment of mobile update vans; PDS-focused camps; scaling infrastructure,High - reduces failure rates by 30-50% within 6 months,High
+Moderate,15,Inconsistent operations,Geographic concentration,Standardize update camp schedules; expand district coverage; improve data quality,Medium - improves consistency and equity,Medium
+Excluded (Youth),25,Youth severely underrepresented in updates,Future service failures for young adults,School-based update camps at Class 10; Aadhaar integration with board exams; youth incentive programs,Very High - prevents 18-year failure wave,Medium
+Excluded (Update Imbalance),16,Extreme imbalance between bio/demo updates,Type-specific infrastructure gaps,Diagnostic camps to identify issue; targeted infrastructure for lagging type,Medium - rebalances update ecosystem,Low-Medium
+Excluded (Geographic),2,High geographic concentration (urban-only access),Rural population systematically underserved,Mobile units for rural/remote areas; partnership with local admin; incentivize rural camp attendance,High - dramatically improves rural access,High

@@ -5,7 +5,12 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(dir:*)",
       "WebSearch",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(pip install:*)",
+      "Bash(python src/aadhaar_analysis.py:*)",
+      "Bash(ls:*)",
+      "Skill(document-skills:pdf)",
+      "Bash(python generate_submission_pdf.py:*)"
     ]
   }
 }

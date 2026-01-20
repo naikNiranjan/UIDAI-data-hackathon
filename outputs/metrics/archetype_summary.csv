@@ -1,0 +1,6 @@
+Archetype,State_Count,Avg_Health,Avg_IDI,Avg_UBI,Avg_YIR,Avg_GCI,Avg_TCS
+Excluded (Geographic),2,54.07,-0.001,0.549,1.303,0.636,0.505
+Excluded (Update Imbalance),16,59.404,-0.002,0.716,1.401,0.361,0.652
+Excluded (Youth),25,46.859,-0.0,0.339,0.196,0.217,0.549
+Moderate,15,55.766,-0.002,0.559,1.017,0.451,0.538
+Sprinter,2,49.178,0.033,0.516,1.015,0.386,0.575
